@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pennywise
 
-## Getting Started
+A private monthly income and expense tracker built with Next.js, Supabase, Tailwind CSS, Recharts, and Lucide React.
 
-First, run the development server:
+## Setup
 
-```bash
+1. Create a Supabase project.
+2. Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL Editor.
+3. Run [`supabase/sharing.sql`](supabase/sharing.sql) in the Supabase SQL Editor to enable view-only ledger sharing.
+4. Copy `.env.local.example` to `.env.local` and enter your Supabase project URL and anon key. Set `NEXT_PUBLIC_CURRENCY` to your ISO 4217 currency code if it is not USD.
+5. Add `SUPABASE_SERVICE_ROLE_KEY` to `.env.local` for the server-side sharing API. Keep it private and never use a `NEXT_PUBLIC_` prefix.
+6. In Supabase Authentication settings, configure email sign-up and confirmation to your preference.
+7. Start the app:
+
+```powershell
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000), create an account or sign in, and start adding entries. The anon key is intended for browser use; row-level security policies restrict each transaction to its owner. Never expose a Supabase service-role key in a `NEXT_PUBLIC_` variable.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The dashboard shows both the selected month's net balance and a cumulative **Balance to
+date** through that selected month, including prior months. Negative income entries reduce
+both totals.
+Use the **All**, **Credit**, and **Expense** controls in the monthly ledger to filter its
+displayed transactions. Credit includes both positive income and negative loss entries.
+Use the trash icon on a ledger row to open a confirmation dialog before permanently
+deleting that transaction.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Use **Share access** to grant an existing Pennywise account view-only access by email or
+revoke that access later. Shared users must sign in with the matching account and select
+the shared ledger in the top bar. Database row-level security keeps transaction inserts,
+updates, and deletes restricted to each ledger's owner; sharing grants read access only.
 
-## Learn More
+### Recording a loss
 
-To learn more about Next.js, take a look at the following resources:
+In the Income form, enter a negative amount to record a loss. It reduces that month's
+income and net balance, and appears as a negative amount labeled "Loss". Expenses must
+remain positive. To enable this on an existing Supabase database, run
+[`supabase/allow-negative-credit.sql`](./supabase/allow-negative-credit.sql) once in the
+Supabase SQL Editor. The main schema also includes this constraint for new databases.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Checks
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```powershell
+npm run lint
+npm run build
+```
 
-## Deploy on Vercel
+## Importing transactions from Excel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The root-level [`migrate.js`](./migrate.js) script imports transactions from `tracker.xlsx`.
+The required packages are `xlsx`, `@supabase/supabase-js`, and `dotenv` (already included
+in this project's dependencies). To install them in a fresh checkout:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```powershell
+npm install xlsx @supabase/supabase-js dotenv
+```
+
+Place `tracker.xlsx` in the project root. Set `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` in `.env.local`, then replace the `USER_ID` placeholder in
+`migrate.js` with the target Supabase Auth user's UUID. Keep the service-role key private;
+it bypasses row-level security and must never be exposed in client-side code or committed.
+Run the migration from the project root:
+
+```powershell
+node migrate.js
+```
+
+The script processes only the configured month sheets, reports skipped rows and insert
+progress, and batches inserts. Its current year mapping is DEC 2025 and JAN–OCT 2026.
+It infers the date from each worksheet row's position (first worksheet row is day 1),
+capped at the actual last day of that month (up to day 31); skipped rows do not change
+later row dates. If both credit and debit amounts are positive in one row, both are
+imported as separate transaction records.
+Only columns A–C are used for transactions; summary phrases and values in column D
+onward are ignored when a positive credit or debit is present, so mixed transaction
+and summary rows keep their A/B transaction amounts. Rows without positive A/B amounts
+are skipped when they contain a summary phrase or have empty/zero amounts.
