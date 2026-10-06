@@ -61,10 +61,7 @@ const currency = new Intl.NumberFormat(undefined, {
   currency: "INR",
   maximumFractionDigits: 2,
 });
-const currencySymbol =
-  currency
-    .formatToParts(0)
-    .find((part) => part.type === "currency")?.value ?? "₹";
+const currencySymbol = "₹";
 const chartColors = ["#26745c", "#d97656", "#d7a43c", "#6385a3", "#946e8d"];
 const maxAmount = 9999999999.99;
 const historyPageSize = 1000;
