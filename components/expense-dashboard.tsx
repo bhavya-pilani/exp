@@ -58,9 +58,13 @@ type SharedLedger = {
 
 const currency = new Intl.NumberFormat(undefined, {
   style: "currency",
-  currency: process.env.NEXT_PUBLIC_CURRENCY || "USD",
+  currency: "INR",
   maximumFractionDigits: 2,
 });
+const currencySymbol =
+  currency
+    .formatToParts(0)
+    .find((part) => part.type === "currency")?.value ?? "₹";
 const chartColors = ["#26745c", "#d97656", "#d7a43c", "#6385a3", "#946e8d"];
 const maxAmount = 9999999999.99;
 const historyPageSize = 1000;
@@ -872,7 +876,7 @@ export default function ExpenseDashboard() {
                   <label className="amount-field">
                     <span>Amount</span>
                     <div className="amount-input">
-                      <span>$</span>
+                      <span>{currencySymbol}</span>
                       <input
                         type="number"
                         min={type === "credit" ? -maxAmount : "0.01"}
@@ -1101,9 +1105,7 @@ export default function ExpenseDashboard() {
                         tickLine={false}
                         width={48}
                         tick={{ fill: "#818982", fontSize: 11 }}
-                        tickFormatter={(value: number) =>
-                          `$${value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value}`
-                        }
+                        tickFormatter={(value: number) => currency.format(value)}
                       />
                       <Tooltip
                         formatter={(value) => currency.format(Number(value))}

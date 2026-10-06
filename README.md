@@ -7,7 +7,7 @@ A private monthly income and expense tracker built with Next.js, Supabase, Tailw
 1. Create a Supabase project.
 2. Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL Editor.
 3. Run [`supabase/sharing.sql`](supabase/sharing.sql) in the Supabase SQL Editor to enable view-only ledger sharing.
-4. Copy `.env.local.example` to `.env.local` and enter your Supabase project URL and anon key. Set `NEXT_PUBLIC_CURRENCY` to your ISO 4217 currency code if it is not USD.
+4. Copy `.env.local.example` to `.env.local` and enter your Supabase project URL and anon key. Amounts are displayed in Indian rupees (INR).
 5. Add `SUPABASE_SERVICE_ROLE_KEY` to `.env.local` for the server-side sharing API. Keep it private and never use a `NEXT_PUBLIC_` prefix.
 6. In Supabase Authentication settings, configure email sign-up and confirmation to your preference.
 7. Start the app:
