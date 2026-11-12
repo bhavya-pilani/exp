@@ -281,6 +281,14 @@ export default function ExpenseDashboard() {
     },
     { credit: 0, debit: 0 },
   );
+  const incomeExcludingLicense = transactions.reduce(
+    (total, transaction) =>
+      transaction.type === "credit" &&
+      transaction.tag.trim().toLowerCase() !== "License"
+        ? total + Number(transaction.amount)
+        : total,
+    0,
+  );
   const visibleTransactions =
     ledgerFilter !== "all"
       ? transactions.filter((transaction) => transaction.type === ledgerFilter)
@@ -803,6 +811,20 @@ export default function ExpenseDashboard() {
             <p className="metric-foot">
               {transactions.filter((item) => item.type === "credit").length}{" "}
               income/loss entries this month
+            </p>
+          </article>
+          <article className="metric-card">
+            <div className="metric-top">
+              <span>Income excluding license</span>
+              <span className="metric-icon income-icon">
+                <ArrowDownLeft size={18} />
+              </span>
+            </div>
+            <p className="metric-value">
+              {currency.format(incomeExcludingLicense)}
+            </p>
+            <p className="metric-foot">
+              Income this month, excluding license
             </p>
           </article>
           <article className="metric-card">
