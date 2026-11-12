@@ -284,7 +284,7 @@ export default function ExpenseDashboard() {
   const incomeExcludingLicense = transactions.reduce(
     (total, transaction) =>
       transaction.type === "credit" &&
-      transaction.tag.trim().toLowerCase() !== "License"
+      transaction.tag.trim().toLowerCase() !== "license"
         ? total + Number(transaction.amount)
         : total,
     0,
@@ -815,7 +815,7 @@ export default function ExpenseDashboard() {
           </article>
           <article className="metric-card">
             <div className="metric-top">
-              <span>Income excluding license</span>
+              <span>Other income</span>
               <span className="metric-icon income-icon">
                 <ArrowDownLeft size={18} />
               </span>
