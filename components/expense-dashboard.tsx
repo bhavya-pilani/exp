@@ -802,20 +802,7 @@ export default function ExpenseDashboard() {
           </article>
           <article className="metric-card">
             <div className="metric-top">
-              <span>Total income</span>
-              <span className="metric-icon income-icon">
-                <ArrowDownLeft size={18} />
-              </span>
-            </div>
-            <p className="metric-value">{currency.format(totals.credit)}</p>
-            <p className="metric-foot">
-              {transactions.filter((item) => item.type === "credit").length}{" "}
-              income/loss entries this month
-            </p>
-          </article>
-          <article className="metric-card">
-            <div className="metric-top">
-              <span>Other income</span>
+              <span>Total credit</span>
               <span className="metric-icon income-icon">
                 <ArrowDownLeft size={18} />
               </span>
@@ -825,6 +812,19 @@ export default function ExpenseDashboard() {
             </p>
             <p className="metric-foot">
               Income this month, excluding license
+            </p>
+          </article>
+          <article className="metric-card">
+            <div className="metric-top">
+              <span>Total income</span>
+              <span className="metric-icon income-icon">
+                <ArrowDownLeft size={18} />
+              </span>
+            </div>
+            <p className="metric-value">{currency.format(totals.credit)}</p>
+            <p className="metric-foot">
+              {transactions.filter((item) => item.type === "credit").length}{" "}
+              income/loss entries this month
             </p>
           </article>
           <article className="metric-card">
