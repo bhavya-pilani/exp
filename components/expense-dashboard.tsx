@@ -801,7 +801,7 @@ export default function ExpenseDashboard() {
               {currency.format(incomeExcludingLicense - totals.debit)}
             </p>
             <p className="metric-foot">
-              Net balance excluding license income
+              Net balance excluding license
             </p>
           </article>
           <article className="metric-card">
