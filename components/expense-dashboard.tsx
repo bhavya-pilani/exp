@@ -797,8 +797,12 @@ export default function ExpenseDashboard() {
                 <Wallet size={18} />
               </span>
             </div>
-            <p className="metric-value">{currency.format(totals.credit - totals.debit)}</p>
-            <p className="metric-foot">Income minus expenses this month</p>
+            <p className="metric-value">
+              {currency.format(incomeExcludingLicense - totals.debit)}
+            </p>
+            <p className="metric-foot">
+              Net balance excluding license income
+            </p>
           </article>
           <article className="metric-card">
             <div className="metric-top">
